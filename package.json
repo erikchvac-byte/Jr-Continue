@@ -1,0 +1,58 @@
+{
+  "name": "claudeteelamma",
+  "version": "2.3.0",
+  "description": "Jr - Multi-agent development system. Your autonomous junior developer assistant with 17 specialized agents, exposed via MCP.",
+  "displayName": "Jr",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "mvp": "node dist/run-mvp.js",
+    "pipeline": "node dist/run-full-pipeline.js",
+    "demo": "node dist/demo.js",
+    "mcp": "node dist/mcp-server/server.js",
+    "verify:syntax": "tsc --noEmit --skipLibCheck",
+    "verify:build": "tsc",
+    "verify:test": "jest --passWithNoTests",
+    "verify:lint": "eslint . --ext .ts",
+    "verify:all": "npm run verify:syntax && npm run verify:build && npm run verify:test && npm run verify:lint"
+  },
+  "keywords": [
+    "multi-agent",
+    "ai",
+    "ollama",
+    "claude",
+    "code-generation",
+    "automation",
+    "task-routing",
+    "cost-optimization"
+  ],
+  "author": "Erik Chavac",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/erikchvac-byte/ClaudeTeelamma.git"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.6",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "chokidar": "^3.5.3",
+    "dotenv": "^17.2.3",
+    "uuid": "^9.0.1"
+  }
+}
