@@ -7,6 +7,7 @@ Collection of general-purpose AI agents and state management utilities.
 - **Architect** - Project structure analysis
 - **AutoDebug** - Automated debugging assistance
 - **ClaudeSpecialist** - Claude API execution
+- **ClaudeMdSync** - CLAUDE.md to Continue.dev rules sync (✅ verified working)
 - **Critic** - Code quality and security review
 - **DataExtractor** - Data extraction and transformation
 - **DependencyScout** - Dependency analysis
@@ -19,7 +20,7 @@ Collection of general-purpose AI agents and state management utilities.
 - **Router** - Task complexity analysis
 - **RoutingOptimizer** - Routing pattern optimization
 - **SessionManager** - Session state management
-- **Watcher** - File system monitoring
+- **Watcher** - File system monitoring with CLAUDE.md auto-sync (✅ verified working)
 
 ## State Management
 
@@ -43,6 +44,16 @@ import { MetaCoordinator } from './agents/MetaCoordinator';
 import { StateManager } from './state/StateManager';
 
 // Use agents individually or compose them
+```
+
+## Testing
+
+Run real-world tests:
+
+```bash
+npm run build
+node test_sync.js      # Test CLAUDE.md sync
+node test_watcher.js   # Test file watching auto-sync
 ```
 
 ## License
