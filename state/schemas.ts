@@ -29,6 +29,25 @@ export type SystemHealth = 'healthy' | 'degraded' | 'failed';
 export type FileEventType = 'created' | 'modified' | 'deleted';
 
 /**
+ * CLAUDE.md sync state
+ * Tracks merged content and sync status for CLAUDE.md files
+ */
+export interface ClaudeMdSources {
+  global?: string;
+  project?: string;
+  local?: string;
+  instructions?: string;
+}
+
+export interface ClaudeMdState {
+  content: string;
+  hash: string;
+  lastSync: string; // ISO 8601 timestamp
+  sources: ClaudeMdSources;
+  continueRulePath: string;
+}
+
+/**
  * Current system state - single source of truth
  * Written atomically by StateManager
  */

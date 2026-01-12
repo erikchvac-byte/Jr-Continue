@@ -97,7 +97,7 @@ Return the code implementation with comments.`;
         generatedFiles.push({
           path: fileInfo.targetPath,
           content: output,
-          operation: fileInfo.operation,
+          operation: fileInfo.operation || 'create',
           timestamp: new Date().toISOString(),
         });
       }

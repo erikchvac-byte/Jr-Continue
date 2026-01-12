@@ -130,7 +130,7 @@ export class OllamaSpecialist {
           await fs.rename(tempPath, fileInfo.targetPath);
 
           // GATE 3: Verify file integrity after write
-          const integrityCheck = await verifyFileIntegrity(fileInfo.targetPath);
+          const integrityCheck = await verifyFileIntegrity(fileInfo.targetPath, output);
           if (!integrityCheck.passed) {
             // Rollback - delete the file
             await fs.unlink(fileInfo.targetPath);
@@ -140,7 +140,7 @@ export class OllamaSpecialist {
           generatedFiles.push({
             path: fileInfo.targetPath,
             content: output,
-            operation: fileInfo.operation,
+            operation: fileInfo.operation || 'create',
             timestamp: new Date().toISOString(),
           });
 

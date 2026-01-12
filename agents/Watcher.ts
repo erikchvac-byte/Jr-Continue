@@ -2,6 +2,9 @@ import chokidar, { FSWatcher } from 'chokidar';
 import { FileChangeEvent } from '../state/schemas';
 import { StateManager } from '../state/StateManager';
 import { promises as fs } from 'fs';
+import { ClaudeMdSync } from './ClaudeMdSync';
+import * as path from 'path';
+import * as os from 'os';
 
 /**
  * Watcher (Agent 8)
@@ -119,6 +122,13 @@ export class Watcher {
       detected_by: 'watcher',
     };
 
+    // Check if this is a CLAUDE.md file change
+    if (this.isClaudeMdFile(filePath)) {
+      this.handleClaudeMdChange(filePath, eventType).catch((error) => {
+        console.error(`Failed to handle CLAUDE.md change: ${error.message}`);
+      });
+    }
+
     // Notify registered callbacks
     this.callbacks.forEach((callback) => {
       try {
@@ -156,6 +166,48 @@ export class Watcher {
       await this.stateManager.writeState(state);
     } catch (error: any) {
       throw new Error(`Failed to notify state manager: ${error.message}`);
+    }
+  }
+
+  /**
+   * Check if a file path is a CLAUDE.md file
+   * Detects: CLAUDE.md, CLAUDE.local.md, .claude/instructions.md
+   */
+  private isClaudeMdFile(filePath: string): boolean {
+    const normalizedPath = path.normalize(filePath).toLowerCase();
+    const basename = path.basename(normalizedPath);
+
+    // Check for CLAUDE.md patterns
+    if (basename === 'claude.md' || basename === 'claude.local.md') {
+      return true;
+    }
+
+    // Check for .claude/instructions.md
+    if (basename === 'instructions.md' && normalizedPath.includes('.claude')) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Handle CLAUDE.md file changes by triggering a sync
+   */
+  private async handleClaudeMdChange(
+    filePath: string,
+    eventType: 'created' | 'modified' | 'deleted'
+  ): Promise<void> {
+    console.log(`[Jr] CLAUDE.md file ${eventType}: ${filePath}`);
+
+    try {
+      const claudeMdSync = new ClaudeMdSync(this.watchPath, this.stateManager);
+      const result = await claudeMdSync.sync();
+
+      if (result.success && result.synced) {
+        console.log(`[Jr] CLAUDE.md re-sync: ${result.message}`);
+      }
+    } catch (error: any) {
+      console.error(`[Jr] CLAUDE.md re-sync failed: ${error.message}`);
     }
   }
 }

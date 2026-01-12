@@ -2,6 +2,7 @@ import { SessionSummary } from '../state/schemas';
 import { StateManager } from '../state/StateManager';
 import { promises as fs } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { ClaudeMdSync } from './ClaudeMdSync';
 
 /**
  * SessionManager (Agent 19)
@@ -17,10 +18,12 @@ import { v4 as uuidv4 } from 'uuid';
 export class SessionManager {
   private summaryPath: string;
   private stateManager: StateManager;
+  private projectRoot: string;
 
-  constructor(summaryPath: string, stateManager: StateManager) {
+  constructor(summaryPath: string, stateManager: StateManager, projectRoot: string) {
     this.summaryPath = summaryPath;
     this.stateManager = stateManager;
+    this.projectRoot = projectRoot;
   }
 
   /**
@@ -43,6 +46,9 @@ export class SessionManager {
         });
       }
 
+      // Sync CLAUDE.md files on initialization
+      await this.syncClaudeMdFiles();
+
       return summary;
     } catch (error: any) {
       if (error.code === 'ENOENT') {
@@ -59,6 +65,9 @@ export class SessionManager {
 
         await this.writeSummary(newSummary);
         console.log(`[Jr] New session started: ${newSummary.session_id}`);
+
+        // Sync CLAUDE.md files on initialization
+        await this.syncClaudeMdFiles();
 
         return newSummary;
       } else {
@@ -176,5 +185,26 @@ export class SessionManager {
     const seconds = Math.floor((durationMs % (1000 * 60)) / 1000);
 
     return `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  /**
+   * Sync CLAUDE.md files to Continue.dev rules
+   * Called during session initialization
+   */
+  private async syncClaudeMdFiles(): Promise<void> {
+    try {
+      const claudeMdSync = new ClaudeMdSync(this.projectRoot, this.stateManager);
+      const result = await claudeMdSync.sync();
+
+      if (result.success) {
+        if (result.synced) {
+          console.log(`[Jr] CLAUDE.md sync: ${result.message}`);
+        }
+      } else {
+        console.warn(`[Jr] CLAUDE.md sync failed: ${result.error}`);
+      }
+    } catch (error: any) {
+      console.error(`[Jr] CLAUDE.md sync error: ${error.message}`);
+    }
   }
 }
