@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//c/Users/erikc/Dev/claude-md-continue/src/**)",
-      "Bash(npm run build:*)",
-      "Bash(npm install:*)"
-    ]
-  }
-}

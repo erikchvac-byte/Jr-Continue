@@ -32,9 +32,13 @@ yarn-error.log*
 # State files
 state/
 .claude/state/
+.claude/settings.local.json
+.jr-continue/
 session_state.json
 session_summary.json
 routing-log.json
+failure_events.jsonl
+applied_fixes.jsonl
 
 # IDE
 .vscode/*
